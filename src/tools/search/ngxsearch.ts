@@ -15,6 +15,7 @@ export const ngxSearchTool = new DynamicStructuredTool({
       const baseUrl = process.env.NGXSEARCH_URL || 'http://172.16.0.25:8080/search';
       const url = new URL(baseUrl);
       url.searchParams.append('q', input.query);
+      url.searchParams.append('format', 'json');
 
       const response = await fetch(url.toString(), {
         method: 'GET',
