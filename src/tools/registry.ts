@@ -1,6 +1,6 @@
 import { StructuredToolInterface } from '@langchain/core/tools';
 import { createGetFinancials, createGetMarketData, createReadFilings, createScreenStocks } from './finance/index.js';
-import { exaSearch, perplexitySearch, tavilySearch, WEB_SEARCH_DESCRIPTION, xSearchTool, X_SEARCH_DESCRIPTION } from './search/index.js';
+import { exaSearch, ngxSearchTool, perplexitySearch, tavilySearch, WEB_SEARCH_DESCRIPTION, xSearchTool, X_SEARCH_DESCRIPTION } from './search/index.js';
 import { skillTool, SKILL_TOOL_DESCRIPTION } from './skill.js';
 import { webFetchTool, WEB_FETCH_DESCRIPTION } from './fetch/web-fetch.js';
 import { browserTool, BROWSER_DESCRIPTION } from './browser/browser.js';
@@ -141,8 +141,16 @@ export function getToolRegistry(model: string): RegisteredTool[] {
     },
   ];
 
-  // Include web_search if Exa, Perplexity, or Tavily API key is configured (Exa → Perplexity → Tavily)
-  if (process.env.EXASEARCH_API_KEY) {
+  // Include web_search based on available config (NGX Search -> Exa -> Perplexity -> Tavily)
+  if (process.env.NGXSEARCH_URL) {
+    tools.push({
+      name: 'web_search',
+      tool: ngxSearchTool,
+      description: WEB_SEARCH_DESCRIPTION,
+      compactDescription: 'Search the web for current information using NGX Search.',
+      concurrencySafe: true,
+    });
+  } else if (process.env.EXASEARCH_API_KEY) {
     tools.push({
       name: 'web_search',
       tool: exaSearch,

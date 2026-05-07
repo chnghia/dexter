@@ -139,6 +139,9 @@ const DEFAULT_FACTORY: ModelFactory = (name, opts) =>
     model: name,
     ...opts,
     apiKey: getApiKey('OPENAI_API_KEY'),
+    configuration: {
+      baseURL: getApiKey('OPENAI_BASE_URL') || 'https://api.openai.com/v1',
+    },
   });
 
 export function getChatModel(
